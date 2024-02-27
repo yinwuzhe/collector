@@ -17,4 +17,5 @@ func main() {
 	http.HandleFunc("/api/count", service.CounterHandler)
 
 	log.Fatal(http.ListenAndServe(":80", nil))
+	
 }
