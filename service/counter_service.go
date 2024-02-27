@@ -11,6 +11,12 @@ import (
 	"wxcloudrun-golang/db/model"
 
 	"gorm.io/gorm"
+
+	"context"
+
+	"net/url"
+
+	"github.com/tencentyun/cos-go-sdk-v5"
 )
 
 // JsonResult 返回结构
@@ -28,6 +34,45 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprint(w, data)
+}
+
+// SecretID:  "AKIDmbaiy11zL981ypYCxu4W4W0R0eQG4jCW"
+// SecretKey: "Ocv8tndMxMbfS7bAi5YtERfkkmlgaas7"
+func GetObjectHander(w http.ResponseWriter, r *http.Request) {
+	res := &JsonResult{}
+	key, _ := getKey(r)
+	fmt.Println("key:" + key)
+	//
+	u, _ := url.Parse("https://weixin-1251754822.cos.ap-guangzhou.myqcloud.com")
+	b := &cos.BaseURL{BucketURL: u}
+	c := cos.NewClient(b, &http.Client{ //SecretId:AKIDmbaiy11zL981ypYCxu4W4W0R0eQG4jCW
+		// SecretKey:Ocv8tndMxMbfS7bAi5YtERfkkmlgaas7
+		Transport: &cos.AuthorizationTransport{
+			SecretID:  "AKIDmbaiy11zL981ypYCxu4W4W0R0eQG4jCW", // 用户的 SecretId，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参考 https://cloud.tencent.com/document/product/598/37140
+			SecretKey: "Ocv8tndMxMbfS7bAi5YtERfkkmlgaas7",     // 用户的 SecretKey，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参考 https://cloud.tencent.com/document/product/598/37140
+		},
+	})
+
+	opt := &cos.BucketGetOptions{
+		Prefix:  "image",
+		MaxKeys: 3,
+	}
+	v, _, err := c.Bucket.Get(context.Background(), opt)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%s\n", v)
+	for _, c := range v.Contents {
+		fmt.Printf("%s, %d\n", c.Key, c.Size)
+	}
+
+	msg, err := json.Marshal(res)
+	if err != nil {
+		fmt.Fprint(w, "内部错误")
+		return
+	}
+	w.Header().Set("content-type", "application/json")
+	w.Write(msg)
 }
 
 // CounterHandler 计数器接口
@@ -130,6 +175,22 @@ func getCurrentCounter() (*model.CounterModel, error) {
 	}
 
 	return counter, nil
+}
+
+func getKey(r *http.Request) (string, error) {
+	decoder := json.NewDecoder(r.Body)
+	body := make(map[string]interface{})
+	if err := decoder.Decode(&body); err != nil {
+		return "", err
+	}
+	defer r.Body.Close()
+
+	action, ok := body["key"]
+	if !ok {
+		return "", fmt.Errorf("缺少 key 参数")
+	}
+
+	return action.(string), nil
 }
 
 // getAction 获取action
