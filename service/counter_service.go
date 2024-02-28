@@ -40,8 +40,8 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 // SecretKey: "Ocv8tndMxMbfS7bAi5YtERfkkmlgaas7"
 func GetObjectHander(w http.ResponseWriter, r *http.Request) {
 	res := &JsonResult{}
-	key, _ := getKey(r)
-	fmt.Println("key:" + key)
+	// key, _ := getKey(r)
+	// fmt.Println("key:" + key)
 	//
 	u, _ := url.Parse("https://weixin-1251754822.cos.ap-guangzhou.myqcloud.com")
 	b := &cos.BaseURL{BucketURL: u}
