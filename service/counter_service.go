@@ -33,7 +33,40 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, data)
 }
+func PutObject(w http.ResponseWriter, r *http.Request) {
+	// 获取上传的文件
+	file, h, err := r.FormFile("file")
+	fmt.Println(h.Filename)
+	if err != nil {
+		// 处理错误
+		fmt.Println("处理错误")
+		panic(err)
+	}
+	defer file.Close()
 
+	key := r.URL.Query().Get("key")
+	fmt.Println("the key is:" + key)
+	_, resp, err := GetCosClient().Object.Upload(context.Background(), key, h.Filename, nil)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(resp)
+
+	res := JsonResult{
+		Code: 200,
+		// Message: "success",
+		// Data: string(body),
+	}
+
+	msg, err := json.Marshal(res)
+	if err != nil {
+		fmt.Fprint(w, "内部错误")
+		return
+	}
+	w.Header().Set("content-type", "application/json")
+	w.Write(msg)
+
+}
 func ObjectList(w http.ResponseWriter, r *http.Request) {
 	prefix := r.URL.Query().Get("prefix")
 	fmt.Println("the type is:" + prefix)

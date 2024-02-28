@@ -18,6 +18,9 @@ func main() {
 	http.HandleFunc("/api/count", service.CounterHandler)
 	http.HandleFunc("/api/GetObject", service.GetObjectHander)
 	http.HandleFunc("/api/ObjectList", service.ObjectList)
+	http.HandleFunc("/api/PutObject", service.PutObject)
+	// http.HandleFunc("/api/UpdateObject", service.UpdateObject)
+	// http.HandleFunc("/api/DeleteObject", service.DeleteObject)
 
 	log.Fatal(http.ListenAndServe(":80", nil))
 
