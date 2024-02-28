@@ -14,8 +14,6 @@ import (
 
 	"context"
 
-	"net/url"
-
 	"github.com/tencentyun/cos-go-sdk-v5"
 )
 
@@ -36,34 +34,60 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, data)
 }
 
-// SecretID:  "AKIDmbaiy11zL981ypYCxu4W4W0R0eQG4jCW"
-// SecretKey: "Ocv8tndMxMbfS7bAi5YtERfkkmlgaas7"
-func GetObjectHander(w http.ResponseWriter, r *http.Request) {
-	res := &JsonResult{}
-	// key, _ := getKey(r)
-	// fmt.Println("key:" + key)
-	//
-	u, _ := url.Parse("https://weixin-1251754822.cos.ap-guangzhou.myqcloud.com")
-	b := &cos.BaseURL{BucketURL: u}
-	c := cos.NewClient(b, &http.Client{ //SecretId:AKIDmbaiy11zL981ypYCxu4W4W0R0eQG4jCW
-		// SecretKey:Ocv8tndMxMbfS7bAi5YtERfkkmlgaas7
-		Transport: &cos.AuthorizationTransport{
-			SecretID:  "AKIDmbaiy11zL981ypYCxu4W4W0R0eQG4jCW", // 用户的 SecretId，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参考 https://cloud.tencent.com/document/product/598/37140
-			SecretKey: "Ocv8tndMxMbfS7bAi5YtERfkkmlgaas7",     // 用户的 SecretKey，建议使用子账号密钥，授权遵循最小权限指引，降低使用风险。子账号密钥获取可参考 https://cloud.tencent.com/document/product/598/37140
-		},
-	})
+func ObjectList(w http.ResponseWriter, r *http.Request) {
+	prefix := r.URL.Query().Get("prefix")
+	fmt.Println("the type is:" + prefix)
+
+	c := GetCosClient()
 
 	opt := &cos.BucketGetOptions{
-		Prefix:  "image",
-		MaxKeys: 3,
+		Prefix:  prefix,
+		MaxKeys: 30,
 	}
 	v, _, err := c.Bucket.Get(context.Background(), opt)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%s\n", v)
-	for _, c := range v.Contents {
-		fmt.Printf("%s, %d\n", c.Key, c.Size)
+
+	res := JsonResult{
+		Code: 200,
+		// Message: "success",
+		Data: v.Contents,
+	}
+
+	msg, err := json.Marshal(res)
+	if err != nil {
+		fmt.Fprint(w, "内部错误")
+		return
+	}
+	w.Header().Set("content-type", "application/json")
+	w.Write(msg)
+}
+
+func GetObjectHander(w http.ResponseWriter, r *http.Request) {
+	// res := &JsonResult{}
+
+	key := r.URL.Query().Get("key")
+	fmt.Println("the key is:" + key)
+
+	c := GetCosClient()
+	resp, err := c.Object.Get(context.Background(), key, nil)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// 处理错误
+	}
+
+	fmt.Println(string(body))
+
+	res := JsonResult{
+		Code: 200,
+		// Message: "success",
+		Data: string(body),
 	}
 
 	msg, err := json.Marshal(res)
