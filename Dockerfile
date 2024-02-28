@@ -9,6 +9,7 @@ WORKDIR /app
 COPY . /app/
 
 # 执行代码编译命令。操作系统参数为linux，编译后的二进制产物命名为main，并存放在当前目录下。
+RUN GOOS=linux go mod download github.com/tencentyun/cos-go-sdk-v5
 RUN GOOS=linux go build -o main .
 
 # 选用运行时所用基础镜像（GO语言选择原则：尽量体积小、包含基础linux内容的基础镜像）
