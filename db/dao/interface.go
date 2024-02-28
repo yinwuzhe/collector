@@ -16,3 +16,6 @@ type CounterInterfaceImp struct{}
 
 // Imp 实现实例
 var Imp CounterInterface = &CounterInterfaceImp{}
+
+
+//这种还使用接口的方式似乎还没有必要吧

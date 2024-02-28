@@ -33,6 +33,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprint(w, data)
 }
+
 func PutObject(w http.ResponseWriter, r *http.Request) {
 	// 获取上传的文件
 	file, h, err := r.FormFile("file")
