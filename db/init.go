@@ -15,7 +15,7 @@ var dbInstance *gorm.DB
 // Init 初始化数据库
 func Init() error {
 
-	source := "%s:%s@tcp(%s)/%s?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true"
+	source := "%s:%s@tcp(%s)/%s?useUnicode=true&autoReconnect=true"
 	user := os.Getenv("MYSQL_USERNAME")
 	pwd := os.Getenv("MYSQL_PASSWORD")
 	addr := os.Getenv("MYSQL_ADDRESS")
