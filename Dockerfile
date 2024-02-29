@@ -2,7 +2,9 @@
 # 选择构建用基础镜像（选择原则：在包含所有用到的依赖前提下尽可能体积小）。如需更换，请到[dockerhub官方仓库](https://hub.docker.com/_/golang?tab=tags)自行选择后替换。
 FROM golang:1.17.1-alpine3.14 as builder
 
+ENV LANG=en_US.UTF-8
 ENV TZ=Asia/Shanghai
+ENV LANGUAGE=en_US:en
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 
