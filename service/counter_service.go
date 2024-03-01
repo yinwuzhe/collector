@@ -13,8 +13,6 @@ import (
 	"gorm.io/gorm"
 
 	"context"
-
-	"github.com/tencentyun/cos-go-sdk-v5"
 )
 
 // JsonResult 返回结构
@@ -67,35 +65,6 @@ func PutObject(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	w.Write(msg)
 
-}
-func ObjectList(w http.ResponseWriter, r *http.Request) {
-	prefix := r.URL.Query().Get("prefix")
-	fmt.Println("the type is:" + prefix)
-
-	c := GetCosClient()
-
-	opt := &cos.BucketGetOptions{
-		Prefix:  prefix,
-		MaxKeys: 30,
-	}
-	v, _, err := c.Bucket.Get(context.Background(), opt)
-	if err != nil {
-		panic(err)
-	}
-
-	res := JsonResult{
-		Code: 200,
-		// Message: "success",
-		Data: v.Contents,
-	}
-
-	msg, err := json.Marshal(res)
-	if err != nil {
-		fmt.Fprint(w, "内部错误")
-		return
-	}
-	w.Header().Set("content-type", "application/json")
-	w.Write(msg)
 }
 
 func GetObjectHander(w http.ResponseWriter, r *http.Request) {
