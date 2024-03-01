@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"wxcloudrun-golang/db"
 	"wxcloudrun-golang/db/dao"
+	"wxcloudrun-golang/db/model"
 )
 
 func CreateObject(w http.ResponseWriter, r *http.Request) {
@@ -44,8 +45,9 @@ func ObjectList(w http.ResponseWriter, r *http.Request) {
 
 	sizeint, _ := strconv.Atoi(size)
 	startint, _ := strconv.Atoi(start)
-	var files interface{}
+	var files []model.FilesModel
 	cli.Table("files").Where("folder = ?", prefix).Limit(sizeint).Offset(startint).Find(&files)
+	// fmt.Printf(files)
 
 	res := JsonResult{
 		Code: 200,
