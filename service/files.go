@@ -43,16 +43,13 @@ func DeleteObject(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateObject(w http.ResponseWriter, r *http.Request) {
-	oldKey := r.URL.Query().Get("old_key")
+	key := r.URL.Query().Get("key")
 	cli := db.Get()
 	file := model.FilesModel{}
-	//只可以更新名字
-	cli.Where("`key` = ?", oldKey).Take(&file)
 
-	// 修改food模型的值
-	file.Key = r.URL.Query().Get("new_key")
+	cli.Where("`key` = ?", key).Take(&file)
 
-	// 等价于: UPDATE `foods` SET `title` = '可乐', `type` = '0', `price` = '100', `stock` = '26', `create_time` = '2018-11-06 11:12:04'  WHERE `foods`.`id` = '2'
+	file.Name = r.URL.Query().Get("name")
 	cli.Save(&file)
 
 	res := JsonResult{
