@@ -66,7 +66,7 @@ func UpdateObject(w http.ResponseWriter, r *http.Request) {
 func Login(w http.ResponseWriter, r *http.Request) {
 	//打印出header
 	headers := r.Header
-	fmt.Println("headers {}", headers)
+	// fmt.Println("headers {}", headers)
 	//从headers里面尝试获取用户的名字和openid,查看是否登录过。没登陆过，则给创建对应的目录
 	openid := headers.Get("X-WX-OPENID")
 	//完全可信
