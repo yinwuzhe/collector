@@ -29,7 +29,7 @@ func CreateObject(w http.ResponseWriter, r *http.Request) {
 func DeleteObject(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Query().Get("key")
 	cli := db.Get()
-	cli.Where("key = ?", key).Delete(&model.FilesModel{})
+	cli.Table("files").Where("`key` = ?", key).Delete(&model.FilesModel{})
 	fmt.Println("删除成功:" + key)
 
 	res := JsonResult{
@@ -47,7 +47,7 @@ func UpdateObject(w http.ResponseWriter, r *http.Request) {
 	cli := db.Get()
 	file := model.FilesModel{}
 	//只可以更新名字
-	cli.Where("key = ?", oldKey).Take(&file)
+	cli.Where("`key` = ?", oldKey).Take(&file)
 
 	// 修改food模型的值
 	file.Key = r.URL.Query().Get("new_key")
@@ -98,7 +98,7 @@ func GetObject(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Query().Get("key")
 	fmt.Println("the key is:" + key)
 	file := model.FilesModel{}
-	db.Get().Table("files").Where("key = ?", key).Find(&file)
+	db.Get().Table("files").Where("`key` = ?", key).Find(&file)
 	fmt.Println("the item is:" + file.Content)
 	res := JsonResult{
 		Code: 200,
