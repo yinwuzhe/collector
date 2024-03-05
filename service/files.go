@@ -11,9 +11,6 @@ import (
 )
 
 func CreateObject(w http.ResponseWriter, r *http.Request) {
-	// 获取上传的文件
-
-	//key还是原来的key,这里给加上
 	key := r.URL.Query().Get("key")
 	folder := r.URL.Query().Get("folder")
 	fmt.Println("the key is:" + key)
