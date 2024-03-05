@@ -96,7 +96,7 @@ func ObjectList(w http.ResponseWriter, r *http.Request) {
 	sizeint, _ := strconv.Atoi(size)
 	startint, _ := strconv.Atoi(start)
 	var files []model.FilesModel
-	cli.Table("files").Where("folder = ? AND openid= ?", openid).Limit(sizeint).Offset(startint).Order("createdAt desc").Find(&files)
+	cli.Table("files").Where("folder = ? AND openid= ?", prefix, openid).Limit(sizeint).Offset(startint).Order("createdAt desc").Find(&files)
 	// fmt.Printf(files)
 
 	res := JsonResult{
