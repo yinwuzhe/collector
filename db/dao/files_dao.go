@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"strings"
 	"wxcloudrun-golang/db"
 	"wxcloudrun-golang/db/model"
 )
@@ -33,12 +34,17 @@ const fileTable = "files"
 // 	return counter, err
 // }
 
-func CreateRecord(key string, folder string, content string) error {
+func CreateRecord(key string, folder string, content string, openid string) error {
 	cli := db.Get()
+	parts := strings.Split(key, "/")
+	lastParts := parts[len(parts)-1]
+	//处理name
 	return cli.Table(fileTable).Create(&model.FilesModel{
-		Key:     key,
+		Key:     openid + "/" + key,
 		Folder:  folder,
 		Content: content,
+		Name:    lastParts,
+		Openid:  openid,
 	}).Error
 
 }
