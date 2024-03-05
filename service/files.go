@@ -50,12 +50,13 @@ func UpdateObject(w http.ResponseWriter, r *http.Request) {
 	cli.Where("`key` = ?", key).Take(&file)
 
 	file.Name = r.URL.Query().Get("name")
+	fmt.Println("UpdateObject:" + file.Name)
+	fmt.Println(file)
 	cli.Save(&file)
 
 	res := JsonResult{
 		Code: 200,
 	}
-
 	shouldReturn := writeResultToResponse(res, w)
 	if shouldReturn {
 		return
