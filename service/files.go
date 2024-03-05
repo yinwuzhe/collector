@@ -92,6 +92,25 @@ func ObjectList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetObject(w http.ResponseWriter, r *http.Request) {
+	// res := &JsonResult{}
+
+	key := r.URL.Query().Get("key")
+	fmt.Println("the key is:" + key)
+	file := model.FilesModel{}
+	db.Get().Table("files").Where("key = ?", key).Find(&file)
+	fmt.Println("the item is:" + file.Content)
+	res := JsonResult{
+		Code: 200,
+		Data: string(file.Content),
+	}
+
+	shouldReturn := writeResultToResponse(res, w)
+	if shouldReturn {
+		return
+	}
+}
+
 func writeResultToResponse(res JsonResult, w http.ResponseWriter) bool {
 	msg, err := json.Marshal(res)
 	if err != nil {

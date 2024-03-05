@@ -11,8 +11,6 @@ import (
 	"wxcloudrun-golang/db/model"
 
 	"gorm.io/gorm"
-
-	"context"
 )
 
 // JsonResult 返回结构
@@ -30,76 +28,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprint(w, data)
-}
-
-func PutObject(w http.ResponseWriter, r *http.Request) {
-	// 获取上传的文件
-	file, h, err := r.FormFile("file")
-	fmt.Println(h.Filename)
-	if err != nil {
-		// 处理错误
-		fmt.Println("处理错误")
-		panic(err)
-	}
-	defer file.Close()
-
-	key := r.URL.Query().Get("key")
-	fmt.Println("the key is:" + key)
-	_, resp, err := GetCosClient().Object.Upload(context.Background(), key, h.Filename, nil)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(resp)
-
-	res := JsonResult{
-		Code: 200,
-		// Message: "success",
-		// Data: string(body),
-	}
-
-	msg, err := json.Marshal(res)
-	if err != nil {
-		fmt.Fprint(w, "内部错误")
-		return
-	}
-	w.Header().Set("content-type", "application/json")
-	w.Write(msg)
-
-}
-
-func GetObjectHander(w http.ResponseWriter, r *http.Request) {
-	// res := &JsonResult{}
-
-	key := r.URL.Query().Get("key")
-	fmt.Println("the key is:" + key)
-
-	c := GetCosClient()
-	resp, err := c.Object.Get(context.Background(), key, nil)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		// 处理错误
-	}
-
-	fmt.Println(string(body))
-
-	res := JsonResult{
-		Code: 200,
-		// Message: "success",
-		Data: string(body),
-	}
-
-	msg, err := json.Marshal(res)
-	if err != nil {
-		fmt.Fprint(w, "内部错误")
-		return
-	}
-	w.Header().Set("content-type", "application/json")
-	w.Write(msg)
 }
 
 // CounterHandler 计数器接口
