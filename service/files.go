@@ -64,6 +64,12 @@ func UpdateObject(w http.ResponseWriter, r *http.Request) {
 }
 
 func ObjectList(w http.ResponseWriter, r *http.Request) {
+	//打印出header
+	headers := r.Header
+	fmt.Println("headers {}", headers)
+	//从headers里面尝试获取用户的名字和openid,查看是否登录过。没登陆过，则给创建对应的目录
+	openid := headers.Get("X-WX-OPENID")
+	fmt.Println("X-WX-OPENID: " + openid)
 	//改为直接从db里面读取，支持排序，按照创建时间逆序、分页
 	prefix := r.URL.Query().Get("prefix")
 	start := r.URL.Query().Get("start")
