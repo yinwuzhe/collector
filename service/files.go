@@ -89,13 +89,14 @@ func ObjectList(w http.ResponseWriter, r *http.Request) {
 	start := r.URL.Query().Get("start")
 	size := r.URL.Query().Get("size")
 	fmt.Println("the type is:" + prefix)
+	openid := r.Header.Get("X-WX-OPENID")
 
 	cli := db.Get()
 
 	sizeint, _ := strconv.Atoi(size)
 	startint, _ := strconv.Atoi(start)
 	var files []model.FilesModel
-	cli.Table("files").Where("folder = ?", prefix).Limit(sizeint).Offset(startint).Order("createdAt desc").Find(&files)
+	cli.Table("files").Where("folder = ? AND openid= ?", openid).Limit(sizeint).Offset(startint).Order("createdAt desc").Find(&files)
 	// fmt.Printf(files)
 
 	res := JsonResult{
