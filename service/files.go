@@ -63,13 +63,27 @@ func UpdateObject(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ObjectList(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	//打印出header
 	headers := r.Header
 	fmt.Println("headers {}", headers)
 	//从headers里面尝试获取用户的名字和openid,查看是否登录过。没登陆过，则给创建对应的目录
 	openid := headers.Get("X-WX-OPENID")
+	//完全可信
 	fmt.Println("X-WX-OPENID: " + openid)
+	res := JsonResult{
+		Code: 200,
+		Data: openid,
+	}
+	shouldReturn := writeResultToResponse(res, w)
+	if shouldReturn {
+		return
+	}
+}
+
+//
+
+func ObjectList(w http.ResponseWriter, r *http.Request) {
 	//改为直接从db里面读取，支持排序，按照创建时间逆序、分页
 	prefix := r.URL.Query().Get("prefix")
 	start := r.URL.Query().Get("start")

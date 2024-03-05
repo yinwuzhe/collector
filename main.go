@@ -15,7 +15,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", service.IndexHandler)
-	// http.HandleFunc("/api/count", service.CounterHandler)
+	http.HandleFunc("/api/Login", service.Login)
 	http.HandleFunc("/api/GetObject", service.GetObject)
 	http.HandleFunc("/api/ObjectList", service.ObjectList)
 	// http.HandleFunc("/api/PutObject", service.PutObject)
