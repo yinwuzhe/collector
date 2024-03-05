@@ -16,7 +16,7 @@ func CreateObject(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Query().Get("key")
 	folder := r.URL.Query().Get("folder")
 	fmt.Println("the key is:" + key)
-	dao.CreateRecord(key, folder)
+	dao.CreateRecord(key, folder, r.URL.Query().Get("content"))
 
 	res := JsonResult{
 		Code: 200,

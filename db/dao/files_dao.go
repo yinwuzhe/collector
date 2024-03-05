@@ -33,11 +33,12 @@ const fileTable = "files"
 // 	return counter, err
 // }
 
-func CreateRecord(key string, folder string) error {
+func CreateRecord(key string, folder string, content string) error {
 	cli := db.Get()
 	return cli.Table(fileTable).Create(&model.FilesModel{
-		Key:    key,
-		Folder: folder,
+		Key:     key,
+		Folder:  folder,
+		Content: content,
 	}).Error
 
 }
