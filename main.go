@@ -17,9 +17,11 @@ func main() {
 	http.HandleFunc("/", service.IndexHandler)
 	http.HandleFunc("/api/Login", service.Login)
 	http.HandleFunc("/api/GetObject", service.GetObject)
+	http.HandleFunc("/api/GetUser", service.GetUser)
 	http.HandleFunc("/api/ObjectList", service.ObjectList)
 	// http.HandleFunc("/api/PutObject", service.PutObject)
 	http.HandleFunc("/api/CreateObject", service.CreateObject)
+	http.HandleFunc("/api/CreateUser", service.CreateUser)
 	http.HandleFunc("/api/UpdateObject", service.UpdateObject)
 	http.HandleFunc("/api/DeleteObject", service.DeleteObject)
 
