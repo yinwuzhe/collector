@@ -1,7 +1,6 @@
 package service
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"wxcloudrun-golang/db"
@@ -15,11 +14,11 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	db.Get().Table("users").Where("`openid` = ?", openid).Find(&user)
 
 	// str := fmt.Sprintf("%v", user)
-	data, _ := json.Marshal(user)
+	// data, _ := json.Marshal(user)
 	// fmt.Println("str:{}" + str)
 	res := JsonResult{
 		Code: 200,
-		Data: data,
+		Data: user,
 	}
 
 	shouldReturn := writeResultToResponse(res, w)
