@@ -11,7 +11,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	openid := r.Header.Get("X-WX-OPENID")
 	fmt.Println("openid:" + openid)
 	user := model.Users{Openid: openid}
-	db.Get().Table("user").Where("`openid` = ?", openid).Find(&user)
+	db.Get().Table("users").Where("`openid` = ?", openid).Find(&user)
 
 	str := fmt.Sprintf("%v", user)
 	res := JsonResult{
@@ -29,7 +29,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	openid := r.Header.Get("X-WX-OPENID")
 	fmt.Println("openid:" + openid)
 	user := model.Users{Openid: openid}
-	db.Get().Table("user").Where("`openid` = ?", openid).Find(&user)
+	db.Get().Table("users").Where("`openid` = ?", openid).Find(&user)
 
 	if user.Id == 0 {
 		username := r.URL.Query().Get("username")
