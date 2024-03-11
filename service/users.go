@@ -19,7 +19,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("str:{}" + str)
 	res := JsonResult{
 		Code: 200,
-		Data: string(data),
+		Data: data,
 	}
 
 	shouldReturn := writeResultToResponse(res, w)
