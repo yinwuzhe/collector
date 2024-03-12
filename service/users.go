@@ -38,7 +38,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("the username is:" + username)
 		nickname := r.URL.Query().Get("nickname")
 		fmt.Println("the nickname is:" + nickname)
-		db.Get().Table("user").Create(&model.Users{
+		db.Get().Table("users").Create(&model.Users{
 			Nickname: nickname,
 			Name:     username,
 			Openid:   openid,
