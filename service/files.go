@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"wxcloudrun-golang/db"
 	"wxcloudrun-golang/db/dao"
 	"wxcloudrun-golang/db/model"
@@ -13,11 +14,15 @@ import (
 func CreateObject(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Query().Get("key")
 	folder := r.URL.Query().Get("folder")
-	fmt.Println("the key is:" + key)
+	fmt.Println("the key is:" + key + folder)
 	openid := r.Header.Get("X-WX-OPENID")
 	fmt.Println("openid:" + openid)
-	dao.CreateRecord(key, folder, r.URL.Query().Get("content"), openid)
+	err := dao.CreateRecord(key, folder, r.URL.Query().Get("content"), openid)
 
+	if err != nil {
+		fmt.Println("DB insert出错")
+		panic(err)
+	}
 	res := JsonResult{
 		Code: 200,
 	}
@@ -90,14 +95,30 @@ func ObjectList(w http.ResponseWriter, r *http.Request) {
 	size := r.URL.Query().Get("size")
 	fmt.Println("the type is:" + prefix)
 	openid := r.Header.Get("X-WX-OPENID")
+	query := r.URL.Query().Get("query")
 
 	cli := db.Get()
 
 	sizeint, _ := strconv.Atoi(size)
 	startint, _ := strconv.Atoi(start)
 	var files []model.FilesModel
-	cli.Table("files").Where("folder = ? AND openid= ?", prefix, openid).Limit(sizeint).Offset(startint).Order("createdAt desc").Find(&files)
-	// fmt.Printf(files)
+	q := cli.Table("files").Where("openid= ?", openid)
+	fmt.Printf("SQL: %s\n", q.Statement.Table)
+	if len(prefix) > 0 {
+		q.Where("  folder = ?  ", prefix)
+		fmt.Printf("SQL: %s\n", q.Statement.SQL.String())
+	}
+	if len(strings.TrimSpace(query)) > 0 {
+
+		q.Where("  (content like ? or name like ?) ", "%"+query+"%", "%"+query+"%")
+		fmt.Printf("SQL: %s\n", q.Statement.SQL.String())
+	}
+	fmt.Println("SQL: ", q)
+	//支持没有prefix
+	//支持LIKE CONTENT 和name
+	q.Limit(sizeint).Offset(startint).Order("createdAt desc").Find(&files)
+
+	fmt.Println(files)
 
 	res := JsonResult{
 		Code: 200,
