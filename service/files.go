@@ -54,7 +54,15 @@ func UpdateObject(w http.ResponseWriter, r *http.Request) {
 
 	cli.Where("`key` = ?", key).Take(&file)
 
-	file.Name = r.URL.Query().Get("name")
+	name := r.URL.Query().Get("name")
+	if len(name) > 0 {
+		file.Name = name
+	}
+
+	content := r.URL.Query().Get("content")
+	if len(content) > 0 {
+		file.Content = content
+	}
 	fmt.Println("UpdateObject:" + file.Name)
 	fmt.Println(file)
 	cli.Save(&file)
